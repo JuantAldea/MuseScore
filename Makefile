@@ -51,6 +51,7 @@ release:
       cd build.release;                          \
       export PATH=${BINPATH};                    \
       cmake -DCMAKE_BUILD_TYPE=RELEASE	       \
+	  -DCMAKE_EXPORT_COMPILE_COMMANDS=1       \
   	  -DCMAKE_TOOLCHAIN_FILE="${CMAKE_TOOLCHAIN_FILE}"       \
   	  -DCMAKE_INSTALL_PREFIX="${PREFIX}"       \
   	  -DMSCORE_INSTALL_SUFFIX="${SUFFIX}"      \
@@ -80,6 +81,7 @@ debug:
       cd build.debug;                                       \
       export PATH=${BINPATH};                               \
       cmake -DCMAKE_BUILD_TYPE=DEBUG	                    \
+	  -DCMAKE_EXPORT_COMPILE_COMMANDS=1                   \
   	  -DCMAKE_INSTALL_PREFIX="${PREFIX}"                  \
   	  -DMSCORE_INSTALL_SUFFIX="${SUFFIX}"                 \
   	  -DMUSESCORE_LABEL="${LABEL}"                        \
@@ -212,5 +214,3 @@ unix:
 
 zip:
 	zip -q -r MuseScore-${VERSION}.zip * -x .git\* -x vtest/html\*
-
-

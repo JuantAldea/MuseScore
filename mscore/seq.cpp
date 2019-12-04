@@ -147,6 +147,7 @@ static long ovTell(void* datasource)
 Seq::Seq()
    : midi(nullptr)
       {
+      playAlong       = false;
       running         = false;
       playlistChanged = false;
       cs              = 0;
@@ -579,6 +580,10 @@ void Seq::processMessages()
                         break;
                   case SeqMsgId::PLAY:
                         putEvent(msg.event);
+                        if (playAlong) {
+                              qDebug("Event: %d %d %d", msg.event.type(), msg.event.pitch(), msg.event.channel());
+                              handlePlayAlong(msg.event);
+                        }
                         break;
                   case SeqMsgId::SEEK:
                         setPos(msg.intVal);
@@ -588,6 +593,43 @@ void Seq::processMessages()
                   }
             }
       }
+
+void Seq::handlePlayAlong(NPlayEvent &event)
+{
+      if (event.type() == ME_NOTEON && event.velo() != 0){
+            pressed_notes.insert(event.pitch());
+      }
+
+      for (auto pending_note : pending_notes) {
+            bool note_found = false;
+            for (auto pressed_note : pressed_notes) {
+                  if (pending_note->pitch() == pressed_note) {
+                        pending_notes.erase(pending_note);
+                        note_found = true;
+                        break;
+                  }
+            }
+
+            if(note_found) {
+                  break;
+            }
+      }
+
+      for (auto pressed_note : pressed_notes) {
+            qDebug("NOTA EN PULSADAS: %d", pressed_note);
+      }
+
+      if (event.velo() == 0){
+            qDebug("NOTEOFF: %d", event.pitch());
+            for (auto pressed_note : pressed_notes){
+                  if (event.pitch() == pressed_note) {
+                        pressed_notes.erase(pressed_note);
+                        qDebug("NOTA ENCONTRADA!");
+                        break;
+                  }
+            }
+      }
+}
 
 //---------------------------------------------------------
 //   metronome
@@ -746,6 +788,10 @@ void Seq::process(unsigned framesPerPeriod, float* buffer)
       processMessages();
 
       if (state == Transport::PLAY) {
+            if (playAlong && !pending_notes.empty()) {
+                  return;
+            }
+
             if (!cs)
                   return;
 
@@ -901,6 +947,7 @@ void Seq::process(unsigned framesPerPeriod, float* buffer)
                   }
             }
       else {
+            pending_notes.clear();
             // Outside of playback mode
             while (!liveEventQueue()->empty()) {
                   const NPlayEvent& event = liveEventQueue()->dequeue();
@@ -1107,6 +1154,10 @@ void Seq::setRelTempo(double relTempo)
       guiToSeq(SeqMsg(SeqMsgId::TEMPO_CHANGE, relTempo));
       }
 
+void Seq::setPlayAlong(bool play)
+      {
+      playAlong = play;
+      }
 //---------------------------------------------------------
 //   setPos
 //    seek
@@ -1581,6 +1632,7 @@ void Seq::heartBeatTimeout()
                                     if (!se->isNote())
                                           continue;
                                     Note* currentNote = toNote(se);
+                                    pending_notes.insert(currentNote);
                                     currentNote->setMark(true);
                                     markedNotes.append(currentNote);
                                     r |= currentNote->canvasBoundingRect();
@@ -1595,6 +1647,7 @@ void Seq::heartBeatTimeout()
                                           continue;
                                     Note* currentNote = toNote(se);
                                     currentNote->setMark(false);
+                                    currentNote->setColor(Qt::blue);
                                     r |= currentNote->canvasBoundingRect();
                                     markedNotes.removeOne(currentNote);
                                     }
