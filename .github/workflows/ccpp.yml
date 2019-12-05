@@ -4,10 +4,10 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-    
     steps:
-    - uses: actions/checkout@v1
-    - name: make
-      run: make debug
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v2.1.0
+      - uses: actions/checkout@v1
+      - name: make
+        run: make debug
