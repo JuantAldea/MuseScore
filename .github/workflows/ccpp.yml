@@ -6,6 +6,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Get Package
+        uses: mstksg/get-package@v1
+        with:
+          apt-get: portaudio19-dev libjack-dev pulseaudio
       - name: Install Qt
         uses: jurplel/install-qt-action@v2.1.0
       - uses: actions/checkout@v1
