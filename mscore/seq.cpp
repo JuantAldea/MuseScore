@@ -615,16 +615,10 @@ void Seq::handlePlayAlong(NPlayEvent &event)
             }
       }
 
-      for (auto pressed_note : pressed_notes) {
-            qDebug("NOTA EN PULSADAS: %d", pressed_note);
-      }
-
       if (event.velo() == 0){
-            qDebug("NOTEOFF: %d", event.pitch());
             for (auto pressed_note : pressed_notes){
                   if (event.pitch() == pressed_note) {
                         pressed_notes.erase(pressed_note);
-                        qDebug("NOTA ENCONTRADA!");
                         break;
                   }
             }
