@@ -1,6 +1,9 @@
 language: cpp
 sudo: false
 
+branches:
+  except:
+    - /^pr\..*/
 env:
   global:
     - "ARTIFACTS_AWS_REGION=us-east-1"
