@@ -615,7 +615,7 @@ void Seq::handlePlayAlong(NPlayEvent &event)
             }
       }
 
-      if (event.velo() == 0){
+      if (event.velo() == 0 || event.type() == ME_NOTEOFF){
             for (auto pressed_note : pressed_notes){
                   if (event.pitch() == pressed_note) {
                         pressed_notes.erase(pressed_note);
