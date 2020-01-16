@@ -887,10 +887,7 @@ void Seq::process(unsigned framesPerPeriod, float* buffer)
                         }
                   const NPlayEvent& event = (*pPlayPos)->second;
 
-                  if (!playAlong) {
-                        // do not play the event on the midi instrument when playing along
-                        playEvent(event, framePos);
-                  }
+                  playEvent(event, framePos);
 
                   if (event.type() == ME_TICK1) {
                         tickRemain = tickLength;
