@@ -66,6 +66,7 @@ DrumrollEditor::DrumrollEditor(QWidget* parent)
       tb->addSeparator();
 #ifdef HAS_MIDI
       tb->addAction(getAction("midi-on"));
+      tb->addAction(getAction("play-along"));
 #endif
       QAction* a = getAction("follow");
       a->setCheckable(true);
@@ -427,4 +428,3 @@ void DrumrollEditor::cmd(QAction* a)
       gv->setStaff(staff, locator);
       }
 }
-

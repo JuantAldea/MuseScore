@@ -1761,6 +1761,17 @@ Shortcut Shortcut::_sc[] = {
          ShortcutFlags::A_CHECKABLE
          },
       {
+         MsWidget::MAIN_WINDOW,
+         STATE_NORMAL | STATE_NOTE_ENTRY,
+         "play-along",
+         QT_TRANSLATE_NOOP("action","Play along"),
+         QT_TRANSLATE_NOOP("action","Toggle 'Play Along'"),
+         0,
+         Icons::midiin_ICON,
+         Qt::WindowShortcut,
+         ShortcutFlags::A_CHECKABLE
+         },
+      {
          MsWidget::SCORE_TAB,
          STATE_NORMAL | STATE_NOTE_ENTRY,
          "beam-start",
@@ -4440,4 +4451,3 @@ QKeySequence Shortcut::keySeqFromString(const QString& str, QKeySequence::Sequen
       return keySeq;
       }
 }
-

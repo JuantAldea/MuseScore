@@ -27,6 +27,7 @@
 #include "driver.h"
 #include "libmscore/fifo.h"
 #include "libmscore/tempo.h"
+#include <set>
 
 class QTimer;
 
@@ -105,6 +106,9 @@ class Seq : public QObject, public Sequencer {
       Q_OBJECT
 
       mutable QMutex mutex;
+      std::set<Note*> pending_notes;
+      std::set<int> pressed_notes;
+      bool playAlong;
 
       MasterScore* cs;
       ScoreView* cv;
@@ -180,6 +184,8 @@ class Seq : public QObject, public Sequencer {
       int getPlayStartUtick();
 
       inline QQueue<NPlayEvent>* liveEventQueue() { return &_liveEventQueue; }
+
+      void handlePlayAlong(NPlayEvent &event);
 
    private slots:
       void seqMessage(int msg, int arg = 0);
@@ -266,6 +272,7 @@ class Seq : public QObject, public Sequencer {
 
       void setInitialMillisecondTimestampWithLatency();
       unsigned getCurrentMillisecondTimestampWithLatency(unsigned framePos) const;
+      void setPlayAlong(bool);
       };
 
 extern Seq* seq;
@@ -274,4 +281,3 @@ extern bool initMidi();
 
 } // namespace Ms
 #endif
-

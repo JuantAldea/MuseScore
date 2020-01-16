@@ -3280,6 +3280,7 @@
       <action>repeat</action>
       <action>pan</action>
       <action>metronome</action>
+      <action>play-along</action>
       </Toolbar>
     </Workspace>
   </museScore>
